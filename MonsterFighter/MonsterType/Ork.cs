@@ -13,7 +13,15 @@ namespace MonsterFighter
             AttackMultiplier = 2;
         }
 
-        public Ork(float multiplier) : base(multiplier)
+        public Ork(float attackMultiplier) : base(attackMultiplier)
+        {
+        }
+
+        public Ork(int statPoints, char strongStat) : base(statPoints, strongStat)
+        {
+        }
+
+        public Ork(float healthPoints, float attackPower, float defencePower, float speed) : base(healthPoints, attackPower, defencePower, speed)
         {
         }
 
@@ -26,7 +34,7 @@ namespace MonsterFighter
             }
             Console.WriteLine($"{GetType().Name} makes a special attack and deals {atk} damage!");
             enemy.ReciveDamage(atk);
-            AttackCounter = 0;
+            SpecialAttackCooldown = 0;
         }
     }
 }

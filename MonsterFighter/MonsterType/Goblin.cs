@@ -13,9 +13,18 @@ namespace MonsterFighter
             AttackMultiplier = 1.5f;
         }
 
-        public Goblin(float multiplier) : base(multiplier)
+        public Goblin(float attackMultiplier) : base(attackMultiplier)
         {
         }
+
+        public Goblin(int statPoints, char strongStat) : base(statPoints, strongStat)
+        {
+        }
+
+        public Goblin(float healthPoints, float attackPower, float defencePower, float speed) : base(healthPoints, attackPower, defencePower, speed)
+        {
+        }
+
         public override void SpecialAttack(Monster enemy)
         {
             var atk = AttackPower * AttackMultiplier - enemy.DefencePower;
@@ -25,7 +34,7 @@ namespace MonsterFighter
             }
             Console.WriteLine($"{GetType().Name} makes a special attack and deals {atk} damage!");
             enemy.ReciveDamage(atk);
-            AttackCounter = 0;
+            SpecialAttackCooldown = 0;
         }
     }
 }

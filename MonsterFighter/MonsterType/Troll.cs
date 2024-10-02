@@ -14,7 +14,15 @@ namespace MonsterFighter
             AttackMultiplier = 2.5f;
         }
 
-        public Troll(float multiplier) : base(multiplier)
+        public Troll(float attackMultiplier) : base(attackMultiplier)
+        {
+        }
+
+        public Troll(int statPoints, char strongStat) : base(statPoints, strongStat)
+        {
+        }
+
+        public Troll(float healthPoints, float attackPower, float defencePower, float speed) : base(healthPoints, attackPower, defencePower, speed)
         {
         }
 
@@ -27,7 +35,7 @@ namespace MonsterFighter
             }
             Console.WriteLine($"{GetType().Name} makes a special attack and deals {atk} damage!");
             enemy.ReciveDamage(atk);
-            AttackCounter = 0;
+            SpecialAttackCooldown = 0;
         }
     }
 }

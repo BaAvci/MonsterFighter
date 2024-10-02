@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,13 +12,23 @@ namespace MonsterFighter
 {
     public abstract class Monster
     {
+        [Stat]
         public float HealthPoints { get; set; }
+        [Stat]
         public float AttackPower { get; set; }
+        [Stat]
         public float DefencePower { get; set; }
+        [Stat]
         public float Speed { get; set; }
-        public int AttackCounter { get; set; } // Counts the amount of attacks for the next special attack.
-        internal float AttackMultiplier;
 
+        public string Name {set; get; }
+
+        public const int defaultMaxStatPoints = 100;
+        public int SpecialAttackCooldown;  // Counts the amount of attacks for the next special attack.
+        internal float AttackMultiplier;
+        private static readonly Random random = new();
+        private int minValue = 5;
+        private int maxValue = 50;
         public Monster()
         {
             SetMonsterStats();
@@ -31,21 +42,40 @@ namespace MonsterFighter
             AttackMultiplier = attackMultiplier;
             SetMonsterStats();
         }
+
+        public Monster(int statPoints, char strongStat)
+        {
+            if (statPoints <= 0)
+            {
+                statPoints = random.Next(minValue,maxValue);
+            }
+            SetMonsterStats(statPoints, strongStat);
+        }
+        public Monster(float healthPoints, float attackPower, float defencePower, float speed)
+        {
+            HealthPoints = healthPoints;
+            AttackPower = attackPower;
+            DefencePower = defencePower;
+            Speed = speed;
+        }
+
         /// <summary>
-        /// The default attack of the monster.
+        /// The default attack of the monster. It selects a random target in the given List.
         /// </summary>
         /// <param name="enemy">The target</param>
-        public void Attack(Monster enemy)
+        public void Attack(List<Monster> enemies)
         {
-            var atk = AttackPower - enemy.DefencePower;
-            AttackCounter++;
+            var randomTargetedMonster = random.Next(0, enemies.Count);
+            var atk = AttackPower - enemies[randomTargetedMonster].DefencePower;
+            SpecialAttackCooldown++;
             if (atk < 0)
             {
                 atk = 0;
             }
-            Console.WriteLine($"{this.GetType().Name} deals {atk} damage to {enemy.GetType().Name}.");
-            enemy.ReciveDamage(atk);
+            Console.WriteLine($"{Name} verursachte {atk} schaden an {enemies[randomTargetedMonster].Name}.");
+            enemies[randomTargetedMonster].ReciveDamage(atk);
         }
+
         /// <summary>
         /// The special attack of the monster. Deals more damage than the normal attack.
         /// </summary>
@@ -59,12 +89,16 @@ namespace MonsterFighter
         internal void ReciveDamage(float takenDamage)
         {
             HealthPoints -= takenDamage;
-            Console.WriteLine($"{this.GetType().Name} now has {HealthPoints} healthpoints.");
+            Console.WriteLine($"{Name} hat nun  {HealthPoints} Lebenspunkte.");
+            if (HealthPoints < 0)
+            {
+                Console.WriteLine($"{Name} ist gestorben.");
+            }
         }
         /// <summary>
         /// Let's the user select the race of the monster that should fight in the arena.
         /// </summary>
-        /// <param name="monsterList">A list of selectable races</param>
+        /// <param name="monsterList">A list of already selected races</param>
         /// <returns></returns>
         public static BeingType SelectRace(List<Monster> monsterList)
         {
@@ -72,25 +106,80 @@ namespace MonsterFighter
             var race = RaceInputCheck(usableRaces);
             return (BeingType)race;
         }
+
         /// <summary>
         /// Allows the user to set the stats of the monster.
         /// </summary>
-        internal void SetMonsterStats()
+        private void SetMonsterStats()
         {
             Console.WriteLine("Eingabe der Statuswerte des Monsters:");
 
             Console.WriteLine("Bitte geben Sie die Lebenspunkte des Monsters ein:");
-            HealthPoints = ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
+            HealthPoints = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
 
             Console.WriteLine("Bitte geben Sie die Angriffsstärke des Monsters ein:");
-            AttackPower = ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Angriffsstärke ein:");
+            AttackPower = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Angriffsstärke ein:");
 
             Console.WriteLine("Bitte geben Sie den Verteitigungswert des Monsters ein:");
-            DefencePower = ValueInputCheck("Bitte geben Sie eine Valide Zahl für den Verteitigungswert ein:");
+            DefencePower = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für den Verteitigungswert ein:");
 
             Console.WriteLine("Bitte geben Sie die Geschwindigkeit des Monsters ein:");
-            Speed = ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Geschwindigkeit ein:");
+            Speed = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Geschwindigkeit ein:");
         }
+
+        private void SetMonsterStats(int maxStatPoints, char strongStat)
+        {
+            //Gets all Properties that have the Attribute "Stat"
+            var allStatProperties = GetAllStatPropertys();
+
+            //Get's the first string item in the list where the Propertyname starts with a specified character.
+
+            SetAllMonsterStatRandom(maxStatPoints, allStatProperties);
+            if (strongStat.Equals('x'))
+            {
+                var preferredStat = allStatProperties.Where(p => p.Name[0] == strongStat).ToList()[0].Name;
+                SetSpecialtyStat(maxStatPoints, allStatProperties, preferredStat);
+            }
+        }
+
+        private void SetSpecialtyStat(int maxStatPoints, List<PropertyInfo> allStatProperties, string preferredStat)
+        {
+            while (allStatProperties.Aggregate((p1, p2) => (float)p1.GetValue(this) > (float)p2.GetValue(this) ? p1 : p2).Name != preferredStat)
+            {
+                var statValue = random.NextDouble() * maxStatPoints;
+                GetType().GetProperty(preferredStat).SetValue(this, (float)statValue);
+            }
+        }
+
+        private void SetAllMonsterStatRandom(int maxStatPoints, List<PropertyInfo> allStatProperties)
+        {
+            foreach (var property in allStatProperties)
+            {
+                var statValue = random.NextDouble() * maxStatPoints;
+                GetType().GetProperty(property.Name).SetValue(this, (float)statValue);
+            }
+        }
+        public static Monster? CreateMonsterManually(BeingType race)
+        {
+            switch (race)
+            {
+                case BeingType.Goblin:
+                    return new Goblin();
+                case BeingType.Ork:
+                    return new Ork();
+                case BeingType.Troll:
+                    return new Troll();
+                default:
+                    Console.WriteLine("Erstellung des Monsters ist fehlgeschlagen!");
+                    return null;
+            }
+        }
+
+        public static List<PropertyInfo> GetAllStatPropertys()
+        {
+            return typeof(Monster).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(Stat))).ToList();
+        }
+
         /// <summary>
         /// Returns a list of selectable races.
         /// </summary>
@@ -111,6 +200,7 @@ namespace MonsterFighter
             Console.WriteLine(outputText);
             return notUsedRaces;
         }
+
         /// <summary>
         /// Validate the input for the Race selection.
         /// </summary>
@@ -131,24 +221,5 @@ namespace MonsterFighter
             }
             return inputValue;
         }
-        /// <summary>
-        /// Checks the value if it's applyable to a parameter.
-        /// </summary>
-        /// <param name="displayText">The text that should be displayed if the value is not good</param>
-        /// <returns></returns>
-        private float ValueInputCheck(string displayText)
-        {
-            var inputValue = -1f;
-            while (inputValue < 0)
-            {
-                if (float.TryParse(Console.ReadLine(), out float input) && input > 0)
-                {
-                    return input;
-                }
-                Console.WriteLine(displayText);
-            }
-            return inputValue;
-        }
-
     }
 }
