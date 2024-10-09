@@ -23,16 +23,27 @@ namespace MonsterFighter
 
         public string Name {set; get; }
 
+        // Declares the maximum stat amount of a single stat
         public const int defaultMaxStatPoints = 100;
-        public int SpecialAttackCooldown;  // Counts the amount of attacks for the next special attack.
+        // Counts the amount of attacks for the next special attack.
+        public int SpecialAttackCooldown;  
+        // The attack multiplier that defines the damage multiplier
         internal float AttackMultiplier;
+        // Static random number generator, that is used for stat generation
         private static readonly Random random = new();
+        // The minimum random value that a stat should have.
         private int minValue = 5;
+        //ToDo : check if this is not the same as defaultMaxStatPoints
         private int maxValue = 50;
+
+        /// <summary>
+        /// Basic Monster creation where the stat input is manual.
+        /// </summary>
         public Monster()
         {
             SetMonsterStats();
         }
+
         /// <summary>
         /// Create a monster with a non default attackmultiplier for an different Special Attack damage output
         /// </summary>
@@ -42,7 +53,11 @@ namespace MonsterFighter
             AttackMultiplier = attackMultiplier;
             SetMonsterStats();
         }
-
+        /// <summary>
+        /// Creates a monster with random stats.
+        /// </summary>
+        /// <param name="statPoints">ToDo check what this is actually used for.</param>
+        /// <param name="strongStat">The stat that should be the strongest.</param>
         public Monster(int statPoints, char strongStat)
         {
             if (statPoints <= 0)
@@ -50,13 +65,6 @@ namespace MonsterFighter
                 statPoints = random.Next(minValue,maxValue);
             }
             SetMonsterStats(statPoints, strongStat);
-        }
-        public Monster(float healthPoints, float attackPower, float defencePower, float speed)
-        {
-            HealthPoints = healthPoints;
-            AttackPower = attackPower;
-            DefencePower = defencePower;
-            Speed = speed;
         }
 
         /// <summary>
@@ -127,6 +135,12 @@ namespace MonsterFighter
             Speed = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Geschwindigkeit ein:");
         }
 
+
+        /// <summary>
+        /// Sets the values of all stats for a single Monster where a preffered stat gets the highest value.
+        /// </summary>
+        /// <param name="maxStatPoints">The maximum value for a single stat</param>
+        /// <param name="strongStat">The stat that should have the highest value.</param>
         private void SetMonsterStats(int maxStatPoints, char strongStat)
         {
             //Gets all Properties that have the Attribute "Stat"
@@ -141,7 +155,12 @@ namespace MonsterFighter
                 SetSpecialtyStat(maxStatPoints, allStatProperties, preferredStat);
             }
         }
-
+        /// <summary>
+        /// Checks if the preffered stat has the highest value.
+        /// </summary>
+        /// <param name="maxStatPoints">The maximum value a stat should have.</param>
+        /// <param name="allStatProperties">A List of all variables with the attribute [Stat].</param>
+        /// <param name="preferredStat">The stat that should have the highest value.</param>
         private void SetSpecialtyStat(int maxStatPoints, List<PropertyInfo> allStatProperties, string preferredStat)
         {
             while (allStatProperties.Aggregate((p1, p2) => (float)p1.GetValue(this) > (float)p2.GetValue(this) ? p1 : p2).Name != preferredStat)
@@ -151,6 +170,11 @@ namespace MonsterFighter
             }
         }
 
+        /// <summary>
+        /// Generates random values for all propertys with the [Stat] attribute
+        /// </summary>
+        /// <param name="maxStatPoints">The maximum value a stat should have.</param>
+        /// <param name="allStatProperties">A List of all variables with the attribute [Stat].</param>
         private void SetAllMonsterStatRandom(int maxStatPoints, List<PropertyInfo> allStatProperties)
         {
             foreach (var property in allStatProperties)
@@ -159,6 +183,12 @@ namespace MonsterFighter
                 GetType().GetProperty(property.Name).SetValue(this, (float)statValue);
             }
         }
+
+        /// <summary>
+        /// Creates a new monster based on the given enum.
+        /// </summary>
+        /// <param name="race">The enum that is named after the class</param>
+        /// <returns>A new mosnter Class</returns>
         public static Monster? CreateMonsterManually(BeingType race)
         {
             switch (race)
@@ -175,6 +205,10 @@ namespace MonsterFighter
             }
         }
 
+        /// <summary>
+        /// Gets all propertys with the attribute [Stat]
+        /// </summary>
+        /// <returns>All propertys with [Stat] attribute</returns>
         public static List<PropertyInfo> GetAllStatPropertys()
         {
             return typeof(Monster).GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(Stat))).ToList();

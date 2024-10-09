@@ -9,11 +9,6 @@ namespace MonsterFighter
     {
         static void Main(string[] args)
         {
-            //var monsterRace = Monster.SelectRace([]).ToString();
-
-            //var monsterType = Type.GetType($"MonsterFighter.{monsterRace}");
-            //var newMonster = Activator.CreateInstance(monsterType) as Monster;
-
             var arena = new Arena();
             var fightingStyle = Arena.SelectFightStyl();
 

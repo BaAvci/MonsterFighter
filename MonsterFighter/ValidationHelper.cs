@@ -28,6 +28,11 @@ namespace MonsterFighter
             return inputValue;
         }
 
+        /// <summary>
+        /// Checks if an input is viable number.
+        /// </summary>
+        /// <param name="minValue">Number that </param>
+        /// <returns></returns>
         public static int NumberCheck(int minValue = 0)
         {
             var number = 0;
@@ -47,6 +52,11 @@ namespace MonsterFighter
 
             return number;
         }
+
+        /// <summary>
+        /// Checks if an input is viable number.
+        /// </summary>
+        /// <returns></returns>
         public static bool YesNoCheck()
         {
             var yesNo = false;
@@ -72,6 +82,11 @@ namespace MonsterFighter
             return yesNo;
         }
 
+        /// <summary>
+        /// Checks if an input is viable character.
+        /// </summary>
+        /// <param name="viableInputs">A list of vialbe Characters</param>
+        /// <returns></returns>
         public static char CharInputCheck(List<char> viableInputs)
         {
             var value = '\0';
@@ -89,6 +104,13 @@ namespace MonsterFighter
             }
             return value;
         }
+
+        /// <summary>
+        /// Checks if an input is viable number between two numbers.
+        /// </summary>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
+        /// <returns></returns>
         public static int CheckValueBetween(int minValue,int maxValue)
         {
             var number = 0;

@@ -21,9 +21,6 @@ namespace MonsterFighter
         {
         }
 
-        public Goblin(float healthPoints, float attackPower, float defencePower, float speed) : base(healthPoints, attackPower, defencePower, speed)
-        {
-        }
 
         public override void SpecialAttack(Monster enemy)
         {

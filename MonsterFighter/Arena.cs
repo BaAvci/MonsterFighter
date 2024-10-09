@@ -13,6 +13,11 @@ namespace MonsterFighter
         private List<Monster> _monsterList = [];
         public bool ViableFight { get; private set; }
 
+
+        /// <summary>
+        /// Let's the Player select 1v1 or groupfight.
+        /// </summary>
+        /// <returns></returns>
         public static int SelectFightStyl()
         {
             Console.WriteLine("Bitte geben Sie die Art des Kampfes an.");
@@ -31,6 +36,10 @@ namespace MonsterFighter
             MonsterCreator.CreateMonsterManually(ref _monsterList);
         }
 
+
+        /// <summary>
+        /// Creates all units for the group fight.
+        /// </summary>
         public void CreateGroupParticipants()
         {
             Console.WriteLine("Bitte wählen Sie die Rasse aus.");

@@ -22,10 +22,6 @@ namespace MonsterFighter
         {
         }
 
-        public Troll(float healthPoints, float attackPower, float defencePower, float speed) : base(healthPoints, attackPower, defencePower, speed)
-        {
-        }
-
         public override void SpecialAttack(Monster enemy)
         {
             var atk = AttackPower * AttackMultiplier - enemy.DefencePower;
