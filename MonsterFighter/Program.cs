@@ -12,16 +12,22 @@ namespace MonsterFighter
             var arena = new Arena();
             var fightingStyle = Arena.SelectFightStyl();
 
-            for (int i = 0; i < 2; i++)
+            switch (fightingStyle)
             {
-                if (fightingStyle == 1)
-                {
-                    arena.CreateSingleParticipants(i);
-                }
-                else if (fightingStyle == 2)
-                {
+                case 1:
+                    // creates the amount of monsters that should fight in the single monster fight.
+                    // 1v1 or 1v1v1 or 1v1v1v1
+                    int monsterAmount = 2;
+                    for (int i = 0; i < monsterAmount; i++)
+                    {
+                        arena.CreateSingleParticipants(i);
+                    }
+                    break;
+                case 2:
                     arena.CreateGroupParticipants();
-                }
+                    break;
+                default:
+                    break;
             }
 
             do
