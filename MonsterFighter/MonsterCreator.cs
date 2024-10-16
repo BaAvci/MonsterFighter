@@ -16,28 +16,29 @@ namespace MonsterFighter
         /// <param name="_monsterList">A list of mosnters that should be filled</param>
         public static void CreateAllUnitsWithSameStatsManually(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
         {
-            Monster? baseMonster = Activator.CreateInstance(monsterTyp) as Monster;
+            Monster? baseMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp} 1") as Monster;
             if (baseMonster == null)
             {
                 Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
                 return;
             }
-            baseMonster.Name = $"{monsterTyp} {1}";
+            //baseMonster.Name = $"{monsterTyp} {1}";
             _monsterList.Add(baseMonster);
 
             for (int i = 1; i < unitCount; i++)
             {
-                var newMonster = Activator.CreateInstance(monsterTyp,
+                Monster? newMonster = Activator.CreateInstance(monsterTyp,
                     _monsterList[0].HealthPoints,
                     _monsterList[0].AttackPower,
                     _monsterList[0].DefencePower,
-                    _monsterList[0].Speed) as Monster;
+                    _monsterList[0].Speed,
+                    _monsterList[0].Name) as Monster;
                 if (newMonster == null)
                 {
                     Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
                     return;
                 }
-                newMonster.Name = $"{monsterTyp.Name} {i + 1}";
+                //newMonster.Name = $"{monsterTyp.Name} {i + 1}";
                 _monsterList.Add(newMonster);
             }
             Console.WriteLine($"Sie haben nun {unitCount} Einheiten der Rasse {monsterTyp}. Alle haben die eingegebenen Status werte.");
@@ -62,13 +63,12 @@ namespace MonsterFighter
             }
             for (int i = 0; i < unitCount; i++)
             {
-                var newMonster = Activator.CreateInstance(monsterTyp, maxStatPoints, prefferdStat) as Monster;
+                var newMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp.Name} {i + 1}", maxStatPoints, prefferdStat) as Monster;
                 if (newMonster == null)
                 {
                     Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
                     return;
                 }
-                newMonster.Name = $"{monsterTyp.Name} {i + 1}";
                 _monsterList.Add(newMonster);
             }
         }
@@ -84,13 +84,12 @@ namespace MonsterFighter
             char prefferdStat = SelectPreferedStat();
             for (int i = 0; i < unitCount; i++)
             {
-                var newMonster = Activator.CreateInstance(monsterTyp, -1, prefferdStat) as Monster;
+                var newMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp.Name} {i + 1}", -1, prefferdStat) as Monster;
                 if (newMonster == null)
                 {
                     Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
                     return;
                 }
-                newMonster.Name = $"{monsterTyp.Name} {i + 1}";
                 _monsterList.Add(newMonster);
 
             }
@@ -106,7 +105,6 @@ namespace MonsterFighter
             var mon = Monster.CreateMonsterManually(race);
             if (mon != null)
             {
-                mon.Name = race.ToString();
                 _monsterList.Add(mon);
             }
         }

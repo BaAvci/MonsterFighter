@@ -13,7 +13,6 @@ namespace MonsterFighter
         private List<Monster> _monsterList = [];
         public bool ViableFight { get; private set; }
 
-
         /// <summary>
         /// Let's the Player select 1v1 or groupfight.
         /// </summary>

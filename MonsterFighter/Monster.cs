@@ -6,41 +6,42 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 
 namespace MonsterFighter
 {
+    // If you add a new stat that should be modifiable, then add the Attribute [Stat] above it.
     public abstract class Monster
     {
         [Stat]
-        public float HealthPoints { get; set; }
+        public float HealthPoints { get; private set; }
         [Stat]
-        public float AttackPower { get; set; }
+        public float AttackPower { get; private set; }
         [Stat]
-        public float DefencePower { get; set; }
+        public float DefencePower { get; private set; }
         [Stat]
-        public float Speed { get; set; }
+        public float Speed { get; private set; }
 
-        public string Name {set; get; }
+        public string Name { get; private set; }
 
         // Declares the maximum stat amount of a single stat
         public const int defaultMaxStatPoints = 100;
         // Counts the amount of attacks for the next special attack.
-        public int SpecialAttackCooldown;  
+        public int SpecialAttackCooldown { get; internal set; }
         // The attack multiplier that defines the damage multiplier
-        internal float AttackMultiplier;
+        protected float AttackMultiplier;
         // Static random number generator, that is used for stat generation
-        private static readonly Random random = new();
+        protected static readonly Random random = new();
         // The minimum random value that a stat should have.
-        private int minValue = 5;
-        //ToDo : check if this is not the same as defaultMaxStatPoints
-        private int maxValue = 50;
+        private readonly int minValue = 5;
 
         /// <summary>
         /// Basic Monster creation where the stat input is manual.
         /// </summary>
-        public Monster()
+        public Monster(string name)
         {
+            Name = name;
             SetMonsterStats();
         }
 
@@ -48,21 +49,24 @@ namespace MonsterFighter
         /// Create a monster with a non default attackmultiplier for an different Special Attack damage output
         /// </summary>
         /// <param name="attackMultiplier"></param>
-        public Monster(float attackMultiplier)
+        public Monster(string name, float attackMultiplier)
         {
+            Name = name;
             AttackMultiplier = attackMultiplier;
             SetMonsterStats();
         }
+
         /// <summary>
         /// Creates a monster with random stats.
         /// </summary>
-        /// <param name="statPoints">ToDo check what this is actually used for.</param>
+        /// <param name="statPoints">The maximum value a stat can have.</param>
         /// <param name="strongStat">The stat that should be the strongest.</param>
-        public Monster(int statPoints, char strongStat)
+        public Monster(string name, int statPoints, char strongStat)
         {
+            Name = name;
             if (statPoints <= 0)
             {
-                statPoints = random.Next(minValue,maxValue);
+                statPoints = random.Next(minValue, defaultMaxStatPoints);
             }
             SetMonsterStats(statPoints, strongStat);
         }
@@ -70,25 +74,52 @@ namespace MonsterFighter
         /// <summary>
         /// The default attack of the monster. It selects a random target in the given List.
         /// </summary>
-        /// <param name="enemy">The target</param>
-        public void Attack(List<Monster> enemies)
+        /// <param name="enemies">A list of vialbe targets</param>
+        public virtual void Attack(List<Monster> enemies)
         {
-            var randomTargetedMonster = random.Next(0, enemies.Count);
-            var atk = AttackPower - enemies[randomTargetedMonster].DefencePower;
-            SpecialAttackCooldown++;
-            if (atk < 0)
+            var target = GetRandomTarget(enemies);
+            if (SpecialAttackCooldown == 5)
             {
-                atk = 0;
+                SpecialAttack(target);
             }
-            Console.WriteLine($"{Name} verursachte {atk} schaden an {enemies[randomTargetedMonster].Name}.");
-            enemies[randomTargetedMonster].ReciveDamage(atk);
+            else
+            {
+                var atk = AttackPower - target.DefencePower;
+                SpecialAttackCooldown++;
+                if (atk < 0)
+                {
+                    atk = 0;
+                }
+                Console.WriteLine($"{Name} verursachte {atk} schaden an {target.Name}.");
+                target.ReciveDamage(atk);
+            }
+        }
+
+        /// <summary>
+        /// Gets a random target from a list.
+        /// </summary>
+        /// <param name="enemies">A list of vialbe targets.</param>
+        /// <returns></returns>
+        protected Monster GetRandomTarget(List<Monster> enemies)
+        {
+            return enemies[random.Next(0, enemies.Count)];
         }
 
         /// <summary>
         /// The special attack of the monster. Deals more damage than the normal attack.
         /// </summary>
-        /// <param name="enemy"></param>
-        public abstract void SpecialAttack(Monster enemy);
+        /// <param name="enemies">A list of vialbe targets</param>
+        protected virtual void SpecialAttack(Monster enemy)
+        {
+            var atk = AttackPower * AttackMultiplier - enemy.DefencePower;
+            if (atk < 0)
+            {
+                atk = 0;
+            }
+            Console.WriteLine($"{GetType().Name} führt einen spezial Angriff aus und verursacht {atk} schaden!");
+            enemy.ReciveDamage(atk);
+            SpecialAttackCooldown = 0;
+        }
 
         /// <summary>
         /// Removes the healthpoints of the monster.
@@ -184,6 +215,18 @@ namespace MonsterFighter
             }
         }
 
+        public static string GetCurrentStats(Monster monster)
+        {
+            var statValues = $"Momentane Werte für {monster.Name} ";
+            var statNames = GetAllStatPropertys();
+            foreach (var stat in statNames)
+            {
+                statValues += $" | {stat.Name} = {stat.GetValue(monster)}";
+            }
+            Console.WriteLine(statValues);
+            return "";
+        }
+
         /// <summary>
         /// Creates a new monster based on the given enum.
         /// </summary>
@@ -193,12 +236,13 @@ namespace MonsterFighter
         {
             switch (race)
             {
+                // Name is fix because there will only be 1 monster of that type if it's created manually.
                 case BeingType.Goblin:
-                    return new Goblin();
+                    return new Goblin($"{race} 1");
                 case BeingType.Ork:
-                    return new Ork();
+                    return new Ork($"{race} 1");
                 case BeingType.Troll:
-                    return new Troll();
+                    return new Troll($"{race} 1");
                 default:
                     Console.WriteLine("Erstellung des Monsters ist fehlgeschlagen!");
                     return null;

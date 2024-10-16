@@ -9,28 +9,26 @@ namespace MonsterFighter
     public class Troll : Monster
     {
 
-        public Troll()
+        public Troll(string name) : base(name)
         {
             AttackMultiplier = 2.5f;
         }
 
-        public Troll(float attackMultiplier) : base(attackMultiplier)
+        public Troll(string name, float attackMultiplier) : base(name, attackMultiplier)
         {
         }
 
-        public Troll(int statPoints, char strongStat) : base(statPoints, strongStat)
+        public Troll(string name, int statPoints, char strongStat) : base(name, statPoints, strongStat)
         {
         }
-
-        public override void SpecialAttack(Monster enemy)
+        /// <summary>
+        /// Special attack from the Troll. He ignores the Defence.
+        /// </summary>
+        /// <param name="enemies">Viable list of targets</param>
+        protected override void SpecialAttack(Monster enemy)
         {
-            var atk = AttackPower * AttackMultiplier - enemy.DefencePower;
-            if (atk < 0)
-            {
-                atk = 0;
-            }
-            Console.WriteLine($"{GetType().Name} makes a special attack and deals {atk} damage!");
-            enemy.ReciveDamage(atk);
+            Console.WriteLine($"{GetType().Name} makes a special attack and deals {AttackPower} damage!");
+            enemy.ReciveDamage(AttackPower);
             SpecialAttackCooldown = 0;
         }
     }

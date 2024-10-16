@@ -8,27 +8,32 @@ namespace MonsterFighter
 {
     public class Goblin : Monster
     {
-        public Goblin()
-        {
-            AttackMultiplier = 1.5f;
-        }
 
-        public Goblin(float attackMultiplier) : base(attackMultiplier)
+        public Goblin(string name, float attackMultiplier) : base(name, attackMultiplier)
         {
         }
 
-        public Goblin(int statPoints, char strongStat) : base(statPoints, strongStat)
+        public Goblin(string name) : base(name)
         {
         }
 
-
-        public override void SpecialAttack(Monster enemy)
+        public Goblin(string name, int statPoints, char strongStat) : base(name, statPoints, strongStat)
         {
-            var atk = AttackPower * AttackMultiplier - enemy.DefencePower;
-            if (atk < 0)
-            {
-                atk = 0;
-            }
+        }
+
+        public override void Attack(List<Monster> enemies)
+        {
+            base.Attack(enemies);
+            SpecialAttackCooldown++;
+        }
+
+        /// <summary>
+        /// Special attack from the goblin allows him to attack twice.
+        /// </summary>
+        /// <param name="enemies">Viable list of targets</param>
+        protected override void SpecialAttack(Monster enemy)
+        {
+            var atk = (AttackPower - enemy.DefencePower) * 2;
             Console.WriteLine($"{GetType().Name} makes a special attack and deals {atk} damage!");
             enemy.ReciveDamage(atk);
             SpecialAttackCooldown = 0;
