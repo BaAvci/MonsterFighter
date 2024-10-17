@@ -15,7 +15,18 @@ namespace MonsterFighter
     public abstract class Monster
     {
         [Stat]
-        public float HealthPoints { get; private set; }
+        public float HealthPoints
+        {
+            get { return healtPoints; }
+            private set
+            {
+                healtPoints = value;
+                if (value <= 0)
+                {
+                    healtPoints = 0;
+                }
+            }
+        }
         [Stat]
         public float AttackPower { get; private set; }
         [Stat]
@@ -24,6 +35,8 @@ namespace MonsterFighter
         public float Speed { get; private set; }
 
         public string Name { get; private set; }
+
+        private float healtPoints;
 
         // Declares the maximum stat amount of a single stat
         public const int defaultMaxStatPoints = 100;
@@ -127,9 +140,9 @@ namespace MonsterFighter
         /// <param name="takenDamage"></param>
         internal void ReciveDamage(float takenDamage)
         {
-            HealthPoints -= takenDamage;
-            Console.WriteLine($"{Name} hat nun  {HealthPoints} Lebenspunkte.");
-            if (HealthPoints < 0)
+            healtPoints -= takenDamage;
+            Console.WriteLine($"{Name} hat nun  {healtPoints} Lebenspunkte.");
+            if (healtPoints < 0)
             {
                 Console.WriteLine($"{Name} ist gestorben.");
             }
@@ -154,7 +167,7 @@ namespace MonsterFighter
             Console.WriteLine("Eingabe der Statuswerte des Monsters:");
 
             Console.WriteLine("Bitte geben Sie die Lebenspunkte des Monsters ein:");
-            HealthPoints = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
+            healtPoints = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
 
             Console.WriteLine("Bitte geben Sie die Angriffsstärke des Monsters ein:");
             AttackPower = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Angriffsstärke ein:");
