@@ -10,6 +10,8 @@ namespace MonsterFighter
     {
         private static FightManager _instance;
 
+        private FightManager() { }
+
         public static FightManager Instance()
         {
             if (_instance == null)

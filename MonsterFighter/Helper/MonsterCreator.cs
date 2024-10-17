@@ -10,6 +10,8 @@ namespace MonsterFighter
     {
         private static MonsterCreator _instance;
 
+        private MonsterCreator() { }
+
         public static MonsterCreator Instance()
         {
             if (_instance == null)
