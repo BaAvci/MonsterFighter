@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 
 namespace MonsterFighter
 {
-    public abstract class ValidationHelper
+    public static class ValidationHelper
     {
         /// <summary>
         /// Checks the value if it's applyable to a parameter.
