@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace MonsterFighter
 {
-    public abstract class MonsterCreator
+    public class MonsterCreator
     {
+        private static MonsterCreator _instance;
+
+        public static MonsterCreator Instance()
+        {
+            if (_instance == null)
+            {
+                _instance = new MonsterCreator();
+            }
+            return _instance;
+        }
+
         /// <summary>
         /// Creates a base unit with random stat, then sets all other units to the same value.
         /// </summary>
