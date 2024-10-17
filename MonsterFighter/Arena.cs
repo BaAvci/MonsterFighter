@@ -11,7 +11,13 @@ namespace MonsterFighter
     public class Arena
     {
         private List<Monster> _monsterList = [];
+        private MonsterCreator _monsterCreatorInstance;
         public bool ViableFight { get; private set; }
+
+        public Arena()
+        {
+            _monsterCreatorInstance = new MonsterCreator();
+        }
 
         /// <summary>
         /// Let's the Player select 1v1 or groupfight.
@@ -32,7 +38,7 @@ namespace MonsterFighter
         public void CreateSingleParticipants(int currentMonsterNumber)
         {
             Console.WriteLine($"Bitte geben Sie die Werte für das {currentMonsterNumber + 1} Monster ein.");
-            MonsterCreator.CreateMonsterManually(ref _monsterList);
+            _monsterCreatorInstance.CreateMonsterManually(ref _monsterList);
         }
 
 
@@ -52,7 +58,7 @@ namespace MonsterFighter
             Console.WriteLine("Wollen Sie die Statuspunkte für eine Rasse selber setzten?");
             if (ValidationHelper.YesNoCheck())
             {
-                MonsterCreator.CreateAllUnitsWithSameStatsManually(monsterType, unitCount, ref _monsterList);
+                _monsterCreatorInstance.CreateAllUnitsWithSameStatsManually(monsterType, unitCount, ref _monsterList);
                 return;
             }
 
@@ -60,11 +66,11 @@ namespace MonsterFighter
 
             if (ValidationHelper.YesNoCheck())
             {
-                MonsterCreator.CreateUnitsWithDefinedMaximumStat(monsterType, unitCount, ref _monsterList);
+                _monsterCreatorInstance.CreateUnitsWithDefinedMaximumStat(monsterType, unitCount, ref _monsterList);
                 return;
             }
             Console.WriteLine("Die werte aller Einheiten werden zufällig generier.");
-            MonsterCreator.CreateAllUnitsWithNoDefinedMaximumStat(monsterType, unitCount, ref _monsterList);
+            _monsterCreatorInstance.CreateAllUnitsWithNoDefinedMaximumStat(monsterType, unitCount, ref _monsterList);
         }
 
         /// <summary>

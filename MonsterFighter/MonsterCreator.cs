@@ -25,7 +25,7 @@ namespace MonsterFighter
         /// <param name="monsterTyp">The Monster that should be created</param>
         /// <param name="unitCount">The amount of monsters should be created</param>
         /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public static void CreateAllUnitsWithSameStatsManually(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
+        public void CreateAllUnitsWithSameStatsManually(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
         {
             Monster? baseMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp} 1") as Monster;
             if (baseMonster == null)
@@ -61,7 +61,7 @@ namespace MonsterFighter
         /// <param name="monsterTyp">The Monster that should be created</param>
         /// <param name="unitCount">The amount of monsters should be created</param>
         /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public static void CreateUnitsWithDefinedMaximumStat(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
+        public void CreateUnitsWithDefinedMaximumStat(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
         {
             char prefferdStat = SelectPreferedStat();
             var maxStatPoints = Monster.defaultMaxStatPoints;
@@ -90,7 +90,7 @@ namespace MonsterFighter
         /// <param name="monsterTyp">The Monster that should be created</param>
         /// <param name="unitCount">The amount of monsters should be created</param>
         /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public static void CreateAllUnitsWithNoDefinedMaximumStat(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
+        public void CreateAllUnitsWithNoDefinedMaximumStat(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
         {
             char prefferdStat = SelectPreferedStat();
             for (int i = 0; i < unitCount; i++)
@@ -110,7 +110,7 @@ namespace MonsterFighter
         /// Lets the user create a monster manually
         /// </summary>
         /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public static void CreateMonsterManually(ref List<Monster> _monsterList)
+        public void CreateMonsterManually(ref List<Monster> _monsterList)
         {
             BeingType race = Monster.SelectRace(_monsterList);
             var mon = Monster.CreateMonsterManually(race);
@@ -123,7 +123,7 @@ namespace MonsterFighter
         /// Let's the user select if a monster should be created with a prefferd stat.
         /// </summary>
         /// <returns>Returns the stat that should be prefferd</returns>
-        private static char SelectPreferedStat()
+        private char SelectPreferedStat()
         {
             Console.WriteLine("Soll ein Statuswert bevorzugt werden? Ja = 1 | Nein = 2");
             var prefferdStat = '\0';
