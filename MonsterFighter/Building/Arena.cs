@@ -12,11 +12,13 @@ namespace MonsterFighter
     {
         private List<Monster> _monsterList = [];
         private MonsterCreator _monsterCreatorInstance;
+        private FightManager _fightInstance;
         public bool ViableFight { get; private set; }
 
         public Arena()
         {
             _monsterCreatorInstance = new MonsterCreator();
+            _fightInstance = new FightManager();
         }
 
         /// <summary>
@@ -101,47 +103,7 @@ namespace MonsterFighter
         public void StartFight()
         {
             var sortedMonsterList = _monsterList.OrderByDescending(o => o.Speed).ToList();
-            var livingMonsterAmount = 0;
-            var turnCounter = 0;
-            var changeOfMonsterAmountCoutner = 0;
-
-
-            while (sortedMonsterList.Where(m => m.HealthPoints > 0).GroupBy(m => m.GetType().Name).ToList().Count > 1)
-            {
-                foreach (var monster in sortedMonsterList)
-                {
-                    if (monster.HealthPoints <= 0)
-                    {
-                        continue;
-                    }
-                    var allLivingMonsters = sortedMonsterList.Where(m => m.HealthPoints > 0).ToList();
-                    if (livingMonsterAmount != allLivingMonsters.Count)
-                    {
-                        changeOfMonsterAmountCoutner = turnCounter;
-                        livingMonsterAmount = allLivingMonsters.Count;
-                    }
-
-                    if (changeOfMonsterAmountCoutner == turnCounter - 100)
-                    {
-                        ValidateParticipants();
-                        return;
-                    }
-
-                    var targatableUnits = allLivingMonsters
-                        .Where(m => m.GetType().Name != monster.GetType().Name)
-                        .ToList();
-                    monster.Attack(targatableUnits);
-
-                    allLivingMonsters = sortedMonsterList.Where(m => m.HealthPoints > 0).ToList();
-                    if (allLivingMonsters.GroupBy(m => m.GetType().Name).ToList().Count < 2)
-                    {
-                        var a = allLivingMonsters.GroupBy(m => m.GetType().Name).ToList().First().ToList();
-                        Console.WriteLine($"Gewonnen hat die {a[0].GetType().Name} Rasse. Die Schlacht hat {turnCounter} Runden gedauert.");
-                        break;
-                    }
-                    turnCounter++;
-                }
-            }
+            _fightInstance.Fight(sortedMonsterList);
         }
     }
 }
