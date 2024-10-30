@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonsterFighter.Weapon;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Xml.Linq;
 namespace MonsterFighter
 {
     // If you add a new stat that should be modifiable, then add the Attribute [Stat] above it.
-    public abstract class Monster
+    public abstract class Monster : IWeaponisable
     {
         [Stat]
         public float HealthPoints
@@ -35,6 +36,8 @@ namespace MonsterFighter
         public float Speed { get; private set; }
 
         public string Name { get; private set; }
+
+        public IWeapon Weapon { get; private set; }
 
         private float healtPoints;
 
@@ -79,7 +82,7 @@ namespace MonsterFighter
             Name = name;
             if (statPoints <= 0)
             {
-                statPoints = random.Next(minValue, defaultMaxStatPoints);
+                statPoints = random.Next(minValue, defaultMaxStatPoints + 1);
             }
             SetMonsterStats(statPoints, strongStat);
         }
@@ -115,7 +118,7 @@ namespace MonsterFighter
         /// <returns></returns>
         protected Monster GetRandomTarget(List<Monster> enemies)
         {
-            return enemies[random.Next(0, enemies.Count)];
+            return enemies[random.Next(0, enemies.Count + 1)];
         }
 
         /// <summary>
@@ -311,6 +314,11 @@ namespace MonsterFighter
                 Console.WriteLine("Bitte geben Sie eine Valide Zahl für die Rasse ein:");
             }
             return inputValue;
+        }
+
+        public void EquipWeapon(IWeapon weapon)
+        {
+            Weapon = weapon;
         }
     }
 }

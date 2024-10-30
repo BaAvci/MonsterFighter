@@ -11,7 +11,6 @@ namespace MonsterFighter
 
         public Troll(string name) : base(name)
         {
-            AttackMultiplier = 2.5f;
         }
 
         public Troll(string name, float attackMultiplier) : base(name, attackMultiplier)

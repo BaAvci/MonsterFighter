@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonsterFighter.Weapon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,7 @@ namespace MonsterFighter
         /// <param name="enemies">Viable list of targets</param>
         protected override void SpecialAttack(Monster enemy)
         {
-            var atk = (AttackPower - enemy.DefencePower) * 2;
+            var atk = (AttackPower - enemy.DefencePower) * Weapon.AttackModifier;
             Console.WriteLine($"{GetType().Name} makes a special attack and deals {atk} damage!");
             enemy.ReciveDamage(atk);
             SpecialAttackCooldown = 0;

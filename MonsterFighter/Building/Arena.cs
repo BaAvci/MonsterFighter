@@ -10,23 +10,29 @@ namespace MonsterFighter
 {
     public class Arena
     {
-        private List<Monster> _monsterList = [];
-        private MonsterCreator _monsterCreatorInstance;
-        private FightManager _fightInstance;
-        public bool ViableFight { get; private set; }
+        private List<Monster> _monsterList;
 
-        public Arena()
+
+        //Singleton instance only for learning practice. Would not exist in a real arena class.
+        private static Arena? instance;
+        private Arena() {}
+
+        public static Arena GetInstance()
         {
-            _monsterCreatorInstance = new MonsterCreator();
-            _fightInstance = new FightManager();
+            if (instance == null)
+            {
+                instance = new Arena();
+            }
+            return instance;
         }
 
         /// <summary>
         /// Let's the Player select 1v1 or groupfight.
         /// </summary>
         /// <returns></returns>
-        public static int SelectFightStyl()
+        public int SelectFightStyl()
         {
+            _monsterList = new List<Monster>();
             Console.WriteLine("Bitte geben Sie die Art des Kampfes an.");
             Console.WriteLine("1 = 1v1 | 2 = Gruppenkampf");
             return ValidationHelper.CheckValueBetween(1, 2);
@@ -39,10 +45,11 @@ namespace MonsterFighter
         /// <returns></returns>
         public void CreateSingleParticipants(int currentMonsterNumber)
         {
-            Console.WriteLine($"Bitte geben Sie die Werte für das {currentMonsterNumber + 1} Monster ein.");
-            _monsterCreatorInstance.CreateMonsterManually(ref _monsterList);
+            Console.WriteLine($"Bitte geben Sie die Werte für das {currentMonsterNumber + 1}. Monster ein.");
+            //Select the race for the monster that the user wants to create.
+            BeingType race = Monster.SelectRace(_monsterList);
+            _monsterList.AddRange(MonsterCreator.CreateMonsterManually(race));
         }
-
 
         /// <summary>
         /// Creates all units for the group fight.
@@ -60,7 +67,7 @@ namespace MonsterFighter
             Console.WriteLine("Wollen Sie die Statuspunkte für eine Rasse selber setzten?");
             if (ValidationHelper.YesNoCheck())
             {
-                _monsterCreatorInstance.CreateAllUnitsWithSameStatsManually(monsterType, unitCount, ref _monsterList);
+                _monsterList.AddRange(MonsterCreator.CreateAllUnitsWithSameStatsManually(monsterType, unitCount));
                 return;
             }
 
@@ -68,33 +75,11 @@ namespace MonsterFighter
 
             if (ValidationHelper.YesNoCheck())
             {
-                _monsterCreatorInstance.CreateUnitsWithDefinedMaximumStat(monsterType, unitCount, ref _monsterList);
+                _monsterList.AddRange(MonsterCreator.CreateUnitsWithDefinedMaximumStat(monsterType, unitCount));
                 return;
             }
             Console.WriteLine("Die werte aller Einheiten werden zufällig generier.");
-            _monsterCreatorInstance.CreateAllUnitsWithNoDefinedMaximumStat(monsterType, unitCount, ref _monsterList);
-        }
-
-        /// <summary>
-        /// Validates if the fight would ever end.
-        /// </summary>
-        /// <returns></returns>
-        public void ValidateParticipants()
-        {
-            var topAttackMonster = _monsterList.MaxBy(m => m.AttackPower);
-            var topDefMonster = _monsterList.MaxBy(m => m.DefencePower);
-            var secondTopDefMonster = _monsterList.Distinct().OrderByDescending(m => m.DefencePower).Skip(1).First();
-
-            var a = topAttackMonster.AttackPower <= topDefMonster.DefencePower;
-            var b = topAttackMonster.AttackPower <= secondTopDefMonster.DefencePower;
-            var c = topDefMonster.AttackPower <= topAttackMonster.DefencePower;
-
-            if (a && b || a && b && c)
-            {
-                Console.WriteLine("Der Kampf würde unendlich lange dauern. Weshalb der Kampf nicht ausgeführt wird.");
-                ViableFight = false;
-            }
-            ViableFight = true;
+            _monsterList.AddRange(MonsterCreator.CreateAllUnitsWithNoDefinedMaximumStat(monsterType, unitCount));
         }
 
         /// <summary>
@@ -103,7 +88,7 @@ namespace MonsterFighter
         public void StartFight()
         {
             var sortedMonsterList = _monsterList.OrderByDescending(o => o.Speed).ToList();
-            _fightInstance.Fight(sortedMonsterList);
+            FightManager.Fight(sortedMonsterList);
         }
     }
 }

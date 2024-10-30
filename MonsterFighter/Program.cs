@@ -9,27 +9,27 @@ namespace MonsterFighter
     {
         static void Main(string[] args)
         {
-            var arena = new Arena();
-            var fightingStyle = Arena.SelectFightStyl();
-            var monsterAmount = 2;
-            switch (fightingStyle)
-            {
-                case 1:
-                    for (int i = 0; i < monsterAmount; i++)
-                    {
-                        arena.CreateSingleParticipants(i);
-                    }
-                    break;
-                case 2:
-                    arena.CreateGroupParticipants();
-                    break;
-                default:
-                    break;
-            }
-
             do
             {
-                arena.StartFight();
+                var fightingStyle = Arena.GetInstance().SelectFightStyl();
+
+                switch (fightingStyle)
+                {
+                    case 1:
+                        var factionAmount = 2;
+                        for (int i = 0; i < factionAmount; i++)
+                        {
+                            Arena.GetInstance().CreateSingleParticipants(i);
+                        }
+                        break;
+                    case 2:
+                        Arena.GetInstance().CreateGroupParticipants();
+                        break;
+                    default:
+                        break;
+                }
+
+                Arena.GetInstance().StartFight();
                 Console.WriteLine("Wollen Sie einen weiteren Kampf ausführen?");
             }
             while (ValidationHelper.YesNoCheck());

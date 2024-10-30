@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonsterFighter.Weapon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,55 +7,50 @@ using System.Threading.Tasks;
 
 namespace MonsterFighter
 {
-    public class MonsterCreator
+    public static class MonsterCreator
     {
-        private static MonsterCreator _instance;
-
-        private MonsterCreator() { }
-
-        public static MonsterCreator Instance()
-        {
-            if (_instance == null)
-            {
-                _instance = new MonsterCreator();
-            }
-            return _instance;
-        }
 
         /// <summary>
         /// Creates a base unit with random stat, then sets all other units to the same value.
         /// </summary>
         /// <param name="monsterTyp">The Monster that should be created</param>
         /// <param name="unitCount">The amount of monsters should be created</param>
-        /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public void CreateAllUnitsWithSameStatsManually(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
+        public static List<Monster> CreateAllUnitsWithSameStatsManually(Type monsterTyp, int unitCount)
         {
+            var monsterList = new List<Monster>();
             Monster? baseMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp} 1") as Monster;
+
             if (baseMonster == null)
             {
                 Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
-                return;
+                return [];
             }
+
+            if (baseMonster is IWeaponisable) baseMonster.EquipWeapon(new Dagger());
+
             //baseMonster.Name = $"{monsterTyp} {1}";
-            _monsterList.Add(baseMonster);
+            monsterList.Add(baseMonster);
 
             for (int i = 1; i < unitCount; i++)
             {
                 Monster? newMonster = Activator.CreateInstance(monsterTyp,
-                    _monsterList[0].HealthPoints,
-                    _monsterList[0].AttackPower,
-                    _monsterList[0].DefencePower,
-                    _monsterList[0].Speed,
-                    _monsterList[0].Name) as Monster;
+                    monsterList[0].HealthPoints,
+                    monsterList[0].AttackPower,
+                    monsterList[0].DefencePower,
+                    monsterList[0].Speed,
+                    monsterList[0].Name,
+                    monsterList[0].Weapon) as Monster;
+
                 if (newMonster == null)
                 {
                     Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
-                    return;
+                    return [];
                 }
                 //newMonster.Name = $"{monsterTyp.Name} {i + 1}";
-                _monsterList.Add(newMonster);
+                monsterList.Add(newMonster);
             }
             Console.WriteLine($"Sie haben nun {unitCount} Einheiten der Rasse {monsterTyp}. Alle haben die eingegebenen Status werte.");
+            return monsterList;
         }
 
         /// <summary>
@@ -62,9 +58,9 @@ namespace MonsterFighter
         /// </summary>
         /// <param name="monsterTyp">The Monster that should be created</param>
         /// <param name="unitCount">The amount of monsters should be created</param>
-        /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public void CreateUnitsWithDefinedMaximumStat(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
+        public static List<Monster> CreateUnitsWithDefinedMaximumStat(Type monsterTyp, int unitCount)
         {
+            var monsterList = new List<Monster>();
             char prefferdStat = SelectPreferedStat();
             var maxStatPoints = Monster.defaultMaxStatPoints;
             Console.WriteLine($"Soll das standart Maximum and Statuspunkten verändert werden? Ja = 1 | Nein = 2 (Standart: {Monster.defaultMaxStatPoints})");
@@ -77,13 +73,17 @@ namespace MonsterFighter
             for (int i = 0; i < unitCount; i++)
             {
                 var newMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp.Name} {i + 1}", maxStatPoints, prefferdStat) as Monster;
+
+                if (newMonster is IWeaponisable) newMonster.EquipWeapon(new Dagger());
+
                 if (newMonster == null)
                 {
                     Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
-                    return;
+                    return [];
                 }
-                _monsterList.Add(newMonster);
+                monsterList.Add(newMonster);
             }
+            return monsterList;
         }
 
         /// <summary>
@@ -91,41 +91,47 @@ namespace MonsterFighter
         /// </summary>
         /// <param name="monsterTyp">The Monster that should be created</param>
         /// <param name="unitCount">The amount of monsters should be created</param>
-        /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public void CreateAllUnitsWithNoDefinedMaximumStat(Type monsterTyp, int unitCount, ref List<Monster> _monsterList)
+        public static List<Monster> CreateAllUnitsWithNoDefinedMaximumStat(Type monsterTyp, int unitCount)
         {
+            var monsterList = new List<Monster>();
             char prefferdStat = SelectPreferedStat();
             for (int i = 0; i < unitCount; i++)
             {
                 var newMonster = Activator.CreateInstance(monsterTyp, $"{monsterTyp.Name} {i + 1}", -1, prefferdStat) as Monster;
+
+                if (newMonster is IWeaponisable) newMonster.EquipWeapon(new Dagger());
+
                 if (newMonster == null)
                 {
+                    //If an error happend, print out the method name.
                     Console.WriteLine($"Monster konnte nicht erstellt werden. Fehler in der Methode {System.Reflection.MethodBase.GetCurrentMethod().Name}");
-                    return;
+                    return [];
                 }
-                _monsterList.Add(newMonster);
-
+                monsterList.Add(newMonster);
             }
+            return monsterList;
         }
 
         /// <summary>
         /// Lets the user create a monster manually
         /// </summary>
-        /// <param name="_monsterList">A list of mosnters that should be filled</param>
-        public void CreateMonsterManually(ref List<Monster> _monsterList)
+        /// <param name="race">The race of the monster that should be created</param>
+        public static List<Monster> CreateMonsterManually(BeingType race)
         {
-            BeingType race = Monster.SelectRace(_monsterList);
+            var monsterList = new List<Monster>();
             var mon = Monster.CreateMonsterManually(race);
             if (mon != null)
             {
-                _monsterList.Add(mon);
+                monsterList.Add(mon);
             }
+            return monsterList;
         }
+
         /// <summary>
         /// Let's the user select if a monster should be created with a prefferd stat.
         /// </summary>
         /// <returns>Returns the stat that should be prefferd</returns>
-        private char SelectPreferedStat()
+        private static char SelectPreferedStat()
         {
             Console.WriteLine("Soll ein Statuswert bevorzugt werden? Ja = 1 | Nein = 2");
             var prefferdStat = '\0';

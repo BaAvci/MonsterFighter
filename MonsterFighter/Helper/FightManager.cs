@@ -6,26 +6,14 @@ using System.Threading.Tasks;
 
 namespace MonsterFighter
 {
-    internal class FightManager
+    internal static class FightManager
     {
-        private static FightManager _instance;
-
-        private FightManager() { }
-
-        public static FightManager Instance()
-        {
-            if (_instance == null)
-            {
-                _instance = new FightManager();
-            }
-            return _instance;
-        }
 
         /// <summary>
         /// Validates if the fight would ever end.
         /// </summary>
         /// <returns></returns>
-        public bool ValidateParticipants(List<Monster> monsterList)
+        private static bool ValidateParticipants(List<Monster> monsterList)
         {
             var topAttackMonster = monsterList.MaxBy(m => m.AttackPower);
             var topDefMonster = monsterList.MaxBy(m => m.DefencePower);
@@ -46,13 +34,16 @@ namespace MonsterFighter
         /// <summary>
         /// Starts the fight between the monsters.
         /// </summary>
-        public void Fight(List<Monster> monsterList)
+        public static void Fight(List<Monster> monsterList)
         {
             var livingMonsterAmount = 0;
             var turnCounter = 0;
-            var changeOfMonsterAmountCoutner = 0;
+            var sameResultCounter = 0;
 
-            while (monsterList.Where(m => m.HealthPoints > 0).GroupBy(m => m.GetType().Name).ToList().Count > 1)
+            //Get all Monsters with more than 0 hp, group them by their race and check if the list contains more than 1 race.
+            while (monsterList.Where(m => m.HealthPoints > 0)
+                .GroupBy(m => m.GetType().Name)
+                .ToList().Count > 1)
             {
                 foreach (var monster in monsterList)
                 {
@@ -61,23 +52,24 @@ namespace MonsterFighter
                         continue;
                     }
                     var allLivingMonsters = monsterList.Where(m => m.HealthPoints > 0).ToList();
-                    if (livingMonsterAmount != allLivingMonsters.Count)
-                    {
-                        changeOfMonsterAmountCoutner = turnCounter;
-                        livingMonsterAmount = allLivingMonsters.Count;
-                    }
 
-                    if (changeOfMonsterAmountCoutner == turnCounter - 100)
+                    //Check if the monsteramount has changed over the last X turns.
+                    if (livingMonsterAmount == allLivingMonsters.Count)
                     {
-                        ValidateParticipants(monsterList);
-                        return;
+                        sameResultCounter++;
+                        if (sameResultCounter == 30 && !ValidateParticipants(monsterList))
+                        {
+                            return;
+                        }
                     }
 
                     var targatableUnits = allLivingMonsters
                         .Where(m => m.GetType().Name != monster.GetType().Name)
                         .ToList();
+
                     monster.Attack(targatableUnits);
 
+                    //Check if all monsters of a race have died after the attack. Then print out the winner.
                     allLivingMonsters = monsterList.Where(m => m.HealthPoints > 0).ToList();
                     if (allLivingMonsters.GroupBy(m => m.GetType().Name).ToList().Count < 2)
                     {

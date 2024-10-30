@@ -10,7 +10,6 @@ namespace MonsterFighter
     {
         public Ork(string name) : base(name) 
         {
-            AttackMultiplier = 2;
         }
 
         public Ork(string name, float attackMultiplier) : base(name, attackMultiplier)
