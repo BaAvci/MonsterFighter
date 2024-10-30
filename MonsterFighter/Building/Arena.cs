@@ -61,7 +61,7 @@ namespace MonsterFighter
 
             var monsterType = Type.GetType($"MonsterFighter.{monsterRace}");
 
-            Console.WriteLine("Wieviele Einheiten sollen für diese Rasse antreten? Ja = 1 | Nein = 2");
+            Console.WriteLine("Wieviele Einheiten sollen für diese Rasse antreten?");
             var unitCount = ValidationHelper.NumberCheck();
 
             Console.WriteLine("Wollen Sie die Statuspunkte für eine Rasse selber setzten? Ja = 1 | Nein = 2");

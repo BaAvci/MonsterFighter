@@ -94,11 +94,13 @@ namespace MonsterFighter
             while (!exit)
             {
                 var input = Console.ReadKey().KeyChar;
-                var check = viableInputs.Any(v => v == input);
+                var check = viableInputs.Any(v => Char.ToLower(v) == Char.ToLower(input));
                 if (check)
                 {
                     value = input;
                     exit = !exit;
+                    Console.WriteLine();
+                    break;
                 }
                 Console.WriteLine("Bitte geben Sie einen validen Buchstaben ein.");
             }
