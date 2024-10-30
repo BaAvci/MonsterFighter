@@ -61,17 +61,17 @@ namespace MonsterFighter
 
             var monsterType = Type.GetType($"MonsterFighter.{monsterRace}");
 
-            Console.WriteLine("Wieviele Einheiten sollen für diese Rasse antreten?");
+            Console.WriteLine("Wieviele Einheiten sollen für diese Rasse antreten? Ja = 1 | Nein = 2");
             var unitCount = ValidationHelper.NumberCheck();
 
-            Console.WriteLine("Wollen Sie die Statuspunkte für eine Rasse selber setzten?");
+            Console.WriteLine("Wollen Sie die Statuspunkte für eine Rasse selber setzten? Ja = 1 | Nein = 2");
             if (ValidationHelper.YesNoCheck())
             {
                 _monsterList.AddRange(MonsterCreator.CreateAllUnitsWithSameStatsManually(monsterType, unitCount));
                 return;
             }
 
-            Console.WriteLine("Wollen Sie die Statuspunkte mit einem Maximum versehen?");
+            Console.WriteLine("Wollen Sie die Statuspunkte mit einem Maximum versehen? Ja = 1 | Nein = 2");
 
             if (ValidationHelper.YesNoCheck())
             {

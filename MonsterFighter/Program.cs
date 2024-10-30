@@ -13,20 +13,20 @@ namespace MonsterFighter
             {
                 var fightingStyle = Arena.GetInstance().SelectFightStyl();
 
-                switch (fightingStyle)
+                var factionAmount = 2;
+                for (int i = 0; i < factionAmount; i++)
                 {
-                    case 1:
-                        var factionAmount = 2;
-                        for (int i = 0; i < factionAmount; i++)
-                        {
+                    switch (fightingStyle)
+                    {
+                        case 1:
                             Arena.GetInstance().CreateSingleParticipants(i);
-                        }
-                        break;
-                    case 2:
-                        Arena.GetInstance().CreateGroupParticipants();
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 2:
+                            Arena.GetInstance().CreateGroupParticipants();
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 Arena.GetInstance().StartFight();

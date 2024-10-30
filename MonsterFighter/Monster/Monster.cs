@@ -19,7 +19,7 @@ namespace MonsterFighter
         public float HealthPoints
         {
             get { return healtPoints; }
-            private set
+            set
             {
                 healtPoints = value;
                 if (value <= 0)
@@ -29,11 +29,11 @@ namespace MonsterFighter
             }
         }
         [Stat]
-        public float AttackPower { get; private set; }
+        public float AttackPower { get; set; }
         [Stat]
-        public float DefencePower { get; private set; }
+        public float DefencePower { get; set; }
         [Stat]
-        public float Speed { get; private set; }
+        public float Speed { get; set; }
 
         public string Name { get; private set; }
 
@@ -118,7 +118,7 @@ namespace MonsterFighter
         /// <returns></returns>
         protected Monster GetRandomTarget(List<Monster> enemies)
         {
-            return enemies[random.Next(0, enemies.Count + 1)];
+            return enemies[random.Next(0, enemies.Count)];
         }
 
         /// <summary>
@@ -227,20 +227,10 @@ namespace MonsterFighter
             foreach (var property in allStatProperties)
             {
                 var statValue = random.NextDouble() * maxStatPoints;
-                GetType().GetProperty(property.Name).SetValue(this, (float)statValue);
+                var type = GetType();
+                var propertyFromType = type.GetProperty(property.Name);
+                propertyFromType.SetValue(this, (float)statValue);
             }
-        }
-
-        public static string GetCurrentStats(Monster monster)
-        {
-            var statValues = $"Momentane Werte für {monster.Name} ";
-            var statNames = GetAllStatPropertys();
-            foreach (var stat in statNames)
-            {
-                statValues += $" | {stat.Name} = {stat.GetValue(monster)}";
-            }
-            Console.WriteLine(statValues);
-            return "";
         }
 
         /// <summary>
