@@ -19,7 +19,7 @@ namespace MonsterFighter
         public float HealthPoints
         {
             get { return healtPoints; }
-            set
+            private set
             {
                 healtPoints = value;
                 if (value <= 0)
@@ -29,11 +29,11 @@ namespace MonsterFighter
             }
         }
         [Stat]
-        public float AttackPower { get; set; }
+        public float AttackPower { get; private set; }
         [Stat]
-        public float DefencePower { get; set; }
+        public float DefencePower { get; private set; }
         [Stat]
-        public float Speed { get; set; }
+        public float Speed { get; private set; }
 
         public string Name { get; private set; }
 
