@@ -20,6 +20,10 @@ namespace MonsterFighter
         public Troll(string name, int statPoints, char strongStat) : base(name, statPoints, strongStat)
         {
         }
+        public Troll(Monster monster) : base(monster)
+        {
+        }
+
         /// <summary>
         /// Special attack from the Troll. He ignores the Defence.
         /// </summary>

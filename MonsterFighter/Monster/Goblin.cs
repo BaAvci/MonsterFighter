@@ -22,6 +22,10 @@ namespace MonsterFighter
         {
         }
 
+        public Goblin(Monster monster) : base(monster)
+        {
+        }
+
         public override void Attack(List<Monster> enemies)
         {
             base.Attack(enemies);

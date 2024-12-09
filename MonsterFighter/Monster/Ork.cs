@@ -20,6 +20,10 @@ namespace MonsterFighter
         {
         }
 
+        public Ork(Monster monster) : base(monster)
+        {
+        }
+
         /// <summary>
         /// Special attack from the Ork. It should do nothing as the cooldown is endless.
         /// </summary>
