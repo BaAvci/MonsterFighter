@@ -33,13 +33,7 @@ namespace MonsterFighter
 
             for (int i = 1; i < unitCount; i++)
             {
-                Monster? newMonster = Activator.CreateInstance(monsterTyp,
-                    monsterList[0].HealthPoints,
-                    monsterList[0].AttackPower,
-                    monsterList[0].DefencePower,
-                    monsterList[0].Speed,
-                    monsterList[0].Name,
-                    monsterList[0].Weapon) as Monster;
+                Monster? newMonster = Activator.CreateInstance(monsterTyp, baseMonster) as Monster;
 
                 if (newMonster == null)
                 {

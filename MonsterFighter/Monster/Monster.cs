@@ -63,6 +63,21 @@ namespace MonsterFighter
         }
 
         /// <summary>
+        /// Monster creation where the new monster copies all the stats from an existing monster.
+        /// </summary>
+        public Monster(Monster monster)
+        {
+            var numberIndex = monster.Name.IndexOf(" ");
+            var monsterNumber = int.Parse(monster.Name.Substring(numberIndex + 1)) + 1;
+            Name = $"{monster.GetType().Name} {monsterNumber}";
+            healtPoints = monster.HealthPoints;
+            AttackPower = monster.AttackPower;
+            DefencePower = monster.DefencePower;
+            Speed = monster.Speed;
+            Weapon = monster.Weapon;
+        }
+
+        /// <summary>
         /// Create a monster with a non default attackmultiplier for an different Special Attack damage output
         /// </summary>
         /// <param name="attackMultiplier"></param>
