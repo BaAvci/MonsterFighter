@@ -192,19 +192,23 @@ namespace MonsterFighter
         /// </summary>
         private void SetMonsterStats()
         {
+            var min = 1;
+            var max = 100;
             Console.WriteLine("Eingabe der Statuswerte des Monsters:");
+            Console.WriteLine($"Sie können Werte zwischen {min} und {max}wählen.");
 
             Console.WriteLine("Bitte geben Sie die Lebenspunkte des Monsters ein:");
-            healthPoints = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
+            healthPoints = ValidationHelper.CheckValueBetween(min, max);
 
             Console.WriteLine("Bitte geben Sie die Angriffsstärke des Monsters ein:");
-            AttackPower = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Angriffsstärke ein:");
+            healthPoints = ValidationHelper.CheckValueBetween(min, max);
 
             Console.WriteLine("Bitte geben Sie den Verteitigungswert des Monsters ein:");
-            DefencePower = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für den Verteitigungswert ein:");
+            healthPoints = ValidationHelper.CheckValueBetween(min, max);
 
             Console.WriteLine("Bitte geben Sie die Geschwindigkeit des Monsters ein:");
-            Speed = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Geschwindigkeit ein:");
+            healthPoints = ValidationHelper.CheckValueBetween(min, max);
+
         }
 
 
@@ -221,7 +225,7 @@ namespace MonsterFighter
             //Get's the first string item in the list where the Propertyname starts with a specified character.
 
             SetAllMonsterStatRandom(maxStatPoints, allStatProperties);
-            if (strongStat.Equals('x'))
+            if (!strongStat.Equals('x'))
             {
                 var preferredStat = allStatProperties.Where(p => p.Name[0] == strongStat).ToList()[0].Name;
                 SetSpecialtyStat(maxStatPoints, allStatProperties, preferredStat);
