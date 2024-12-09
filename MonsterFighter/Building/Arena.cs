@@ -15,7 +15,7 @@ namespace MonsterFighter
 
         //Singleton instance only for learning practice. Would not exist in a real arena class.
         private static Arena? instance;
-        private Arena() {}
+        private Arena() { }
 
         public static Arena GetInstance()
         {
@@ -56,13 +56,15 @@ namespace MonsterFighter
         /// </summary>
         public void CreateGroupParticipants()
         {
+            var maxUnits = 10;
             Console.WriteLine("Bitte wählen Sie die Rasse aus.");
             var monsterRace = Monster.SelectRace(_monsterList).ToString();
 
             var monsterType = Type.GetType($"MonsterFighter.{monsterRace}");
 
             Console.WriteLine("Wieviele Einheiten sollen für diese Rasse antreten?");
-            var unitCount = ValidationHelper.NumberCheck();
+            Console.WriteLine($"Sie können bis zu {maxUnits} pro Rasse auswählen?");
+            var unitCount = ValidationHelper.CheckValueBetween(1, maxUnits);
 
             Console.WriteLine("Wollen Sie die Statuspunkte für eine Rasse selber setzten? Ja = 1 | Nein = 2");
             if (ValidationHelper.YesNoCheck())

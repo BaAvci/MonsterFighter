@@ -128,7 +128,7 @@ namespace MonsterFighter
         private static char SelectPreferedStat()
         {
             Console.WriteLine("Soll ein Statuswert bevorzugt werden? Ja = 1 | Nein = 2");
-            var prefferdStat = '\0';
+            var prefferdStat = 'x';
             if (ValidationHelper.YesNoCheck())
             {
                 Console.WriteLine("Welcher Status soll bevorzugt werden?");

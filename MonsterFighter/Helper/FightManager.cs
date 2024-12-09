@@ -77,6 +77,7 @@ namespace MonsterFighter
                         Console.WriteLine($"Gewonnen hat die {a[0].GetType().Name} Rasse. Die Schlacht hat {turnCounter} Runden gedauert.");
                         break;
                     }
+                    livingMonsterAmount = allLivingMonsters.Count;
                     turnCounter++;
                 }
             }
