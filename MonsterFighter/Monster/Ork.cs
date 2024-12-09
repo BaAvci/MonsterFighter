@@ -8,7 +8,7 @@ namespace MonsterFighter
 {
     public class Ork : Monster
     {
-        public Ork(string name) : base(name) 
+        public Ork(string name) : base(name)
         {
         }
 
@@ -20,11 +20,14 @@ namespace MonsterFighter
         {
         }
 
-        public override void Attack(List<Monster> enemies)
+        /// <summary>
+        /// Special attack from the Ork. It should do nothing as the cooldown is endless.
+        /// </summary>
+        /// <param name="enemies">Viable list of targets</param>
+        protected override void SpecialAttack(Monster enemy)
         {
-            base.Attack(enemies);
+            this.HealSelf(10);
             SpecialAttackCooldown = 0;
         }
-
     }
 }

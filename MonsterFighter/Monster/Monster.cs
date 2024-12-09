@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -116,7 +117,7 @@ namespace MonsterFighter
         /// </summary>
         /// <param name="enemies">A list of vialbe targets.</param>
         /// <returns></returns>
-        protected Monster GetRandomTarget(List<Monster> enemies)
+        protected static Monster GetRandomTarget(List<Monster> enemies)
         {
             return enemies[random.Next(0, enemies.Count)];
         }
@@ -160,6 +161,15 @@ namespace MonsterFighter
             var usableRaces = GetAllSelectableRaces(monsterList);
             var race = RaceInputCheck(usableRaces);
             return (BeingType)race;
+        }
+
+        /// <summary>
+        /// Heals the monster for a certain amount.
+        /// </summary>
+        /// <param name="healAmount">The amount of health that should be regenerated</param>
+        protected void HealSelf(float healAmount)
+        {
+            healtPoints += healAmount;
         }
 
         /// <summary>
