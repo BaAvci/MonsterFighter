@@ -31,6 +31,7 @@ namespace MonsterFighter
 
                 Arena.GetInstance().StartFight();
                 Console.WriteLine("Wollen Sie einen weiteren Kampf ausführen?");
+                Console.WriteLine("1 = Neuen kampf starten | 2 = Programm beenden");
             }
             while (ValidationHelper.YesNoCheck());
         }
