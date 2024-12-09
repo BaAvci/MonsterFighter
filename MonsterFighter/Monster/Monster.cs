@@ -19,28 +19,28 @@ namespace MonsterFighter
         [Stat]
         public float HealthPoints
         {
-            get { return healtPoints; }
-            private set
+            get { return healthPoints; }
+            protected set
             {
-                healtPoints = value;
+                healthPoints = value;
                 if (value <= 0)
                 {
-                    healtPoints = 0;
+                    healthPoints = 0;
                 }
             }
         }
         [Stat]
-        public float AttackPower { get; private set; }
+        public float AttackPower { get; protected set; }
         [Stat]
-        public float DefencePower { get; private set; }
+        public float DefencePower { get; protected set; }
         [Stat]
-        public float Speed { get; private set; }
+        public float Speed { get; protected set; }
 
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
-        public IWeapon Weapon { get; private set; }
+        public IWeapon Weapon { get; protected set; }
 
-        private float healtPoints;
+        private float healthPoints;
 
         // Declares the maximum stat amount of a single stat
         public const int defaultMaxStatPoints = 100;
@@ -70,7 +70,7 @@ namespace MonsterFighter
             var numberIndex = monster.Name.IndexOf(" ");
             var monsterNumber = int.Parse(monster.Name.Substring(numberIndex + 1)) + 1;
             Name = $"{monster.GetType().Name} {monsterNumber}";
-            healtPoints = monster.HealthPoints;
+            healthPoints = monster.HealthPoints;
             AttackPower = monster.AttackPower;
             DefencePower = monster.DefencePower;
             Speed = monster.Speed;
@@ -159,9 +159,9 @@ namespace MonsterFighter
         /// <param name="takenDamage"></param>
         internal void ReciveDamage(float takenDamage)
         {
-            healtPoints -= takenDamage;
-            Console.WriteLine($"{Name} hat nun  {healtPoints} Lebenspunkte.");
-            if (healtPoints < 0)
+            healthPoints -= takenDamage;
+            Console.WriteLine($"{Name} hat nun  {healthPoints} Lebenspunkte.");
+            if (healthPoints < 0)
             {
                 Console.WriteLine($"{Name} ist gestorben.");
             }
@@ -184,7 +184,7 @@ namespace MonsterFighter
         /// <param name="healAmount">The amount of health that should be regenerated</param>
         protected void HealSelf(float healAmount)
         {
-            healtPoints += healAmount;
+            healthPoints += healAmount;
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace MonsterFighter
             Console.WriteLine("Eingabe der Statuswerte des Monsters:");
 
             Console.WriteLine("Bitte geben Sie die Lebenspunkte des Monsters ein:");
-            healtPoints = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
+            healthPoints = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Lebenspunkte ein:");
 
             Console.WriteLine("Bitte geben Sie die Angriffsstärke des Monsters ein:");
             AttackPower = ValidationHelper.ValueInputCheck("Bitte geben Sie eine Valide Zahl für die Angriffsstärke ein:");
