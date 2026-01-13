@@ -5,6 +5,11 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonsterFighter", "MonsterFighter\MonsterFighter.csproj", "{C164DDA0-16AF-493E-979C-C2E9CB3A3A84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonsterFighterTests", "MonsterFighterTests\MonsterFighterTests.csproj", "{F8AFBBFB-CDA4-435F-94D0-0701B9F07926}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C164DDA0-16AF-493E-979C-C2E9CB3A3A84} = {C164DDA0-16AF-493E-979C-C2E9CB3A3A84}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{C164DDA0-16AF-493E-979C-C2E9CB3A3A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C164DDA0-16AF-493E-979C-C2E9CB3A3A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C164DDA0-16AF-493E-979C-C2E9CB3A3A84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8AFBBFB-CDA4-435F-94D0-0701B9F07926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8AFBBFB-CDA4-435F-94D0-0701B9F07926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8AFBBFB-CDA4-435F-94D0-0701B9F07926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8AFBBFB-CDA4-435F-94D0-0701B9F07926}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
