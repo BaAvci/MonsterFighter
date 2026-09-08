@@ -227,7 +227,7 @@ namespace MonsterFighter
             SetAllMonsterStatRandom(maxStatPoints, allStatProperties);
             if (!strongStat.Equals('x'))
             {
-                var preferredStat = allStatProperties.Where(p => p.Name[0] == strongStat).ToList()[0].Name;
+                var preferredStat = allStatProperties.Where(p => p.Name.ToLower()[0] == strongStat).ToList()[0].Name;
                 SetSpecialtyStat(maxStatPoints, allStatProperties, preferredStat);
             }
         }
